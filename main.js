@@ -1,3 +1,9 @@
+ilaya_nila="";
+believer="";
+function preload(){
+    ilaya_nila=loadSound("ilaya-nila.mp3");
+    believer=loadSound("believer.mp3");
+}
 function setup(){
     canvas = createCanvas(500, 500);
     canvas.center();
