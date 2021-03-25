@@ -1,17 +1,106 @@
-ilaya_nila="";
-believer="";
-function preload(){
-    ilaya_nila=loadSound("ilaya-nila.mp3");
-    believer=loadSound("believer.mp3");
-}
-function setup(){
-    canvas = createCanvas(500, 500);
-    canvas.center();
-    video = createCapture(VIDEO);
-    video.size(500, 500);
-    video.hide();
-}
-function draw() 
+ilaya_nila = "";
+believer = "";
+
+song1_status = "";
+song2_status = "";
+
+scoreRightWrist = 0;
+scoreLeftWrist = 0;
+
+rightWristX = 0;
+rightWristY = 0;
+
+leftWristX = 0;
+leftWristY = 0;
+
+function preload()
 {
-    image(video,0,0,500,500);
+	ilaya_nila = loadSound("ilaya-nila.mp3");
+	Mannil = loadSound("Mannil.mp3");
 }
+
+function setup() {
+	canvas =  createCanvas(500, 500);
+	canvas.center();
+
+	video = createCapture(VIDEO);
+	video.hide();
+
+	poseNet = ml5.poseNet(video, modelLoaded);
+	poseNet.on('pose', gotPoses);
+}
+
+function modelLoaded() {
+  console.log('PoseNet Is Initialized');
+}
+
+function gotPoses(results)
+{
+  if(results.length > 0)
+  {
+	console.log(results);
+	scoreRightWrist =  results[0].pose.keypoints[10].score;
+	scoreLeftWrist =  results[0].pose.keypoints[9].score;
+	console.log("scoreRightWrist = " + scoreRightWrist + "scoreLeftWrist = " + scoreLeftWrist);
+	
+	rightWristX = results[0].pose.rightWrist.x;
+	rightWristY = results[0].pose.rightWrist.y;
+	console.log("rightWristX = " + rightWristX +" rightWristY = "+ rightWristY);
+
+	leftWristX = results[0].pose.leftWrist.x;
+	leftWristY = results[0].pose.leftWrist.y;
+	console.log("leftWristX = " + leftWristX +" leftWristY = "+ leftWristY);
+		
+  }
+}
+
+function draw() {
+	image(video, 0, 0, 500, 500);
+	
+	song1_status = ilaya_nila.isPlaying();
+	song2_status = Mannil.isPlaying();
+    
+	fill("#FF0000");
+	stroke("#FF0000");
+
+	if(scoreRightWrist > 0.2)
+	{ 
+		circle(rightWristX,rightWristY,20);
+
+			ilaya_nila.stop();
+            
+		if(song1_status == false)
+		{
+			Mannil.play();
+			document.getElementById("song_name").innerHTML = "Mannil Indha song"
+		}
+	}
+
+	if(scoreLeftWrist > 0.2)
+	{
+		circle(leftWristX,leftWristY,20);
+
+			Mannil.stop();
+
+		if(song2_status == false)
+		{
+			ilaya_nila.play();
+			document.getElementById("song_name").innerHTML = "Ilaya nila song"
+		}
+	}
+
+}
+
+function play()
+{
+	song.play();
+	song.setVolume(1);
+	song.rate(1);
+}
+
+
+
+
+
+
+

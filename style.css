@@ -27,6 +27,7 @@ body{
 }
 #song_name{
     font-size: 23px;
+    background-color:lawngreen;
 }
 canvas{
     border:5px solid white;
